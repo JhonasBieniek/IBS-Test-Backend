@@ -10,8 +10,7 @@ export class AppService {
       to: email,
       from: 'goniekltda@gmail.com',
       subject: title,
-      text: text,
-      html: `<strong>${text}</strong>`,
+      html: text,
     })
   }
 }
