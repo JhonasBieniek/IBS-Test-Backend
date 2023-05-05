@@ -11,6 +11,6 @@ export class AppController {
     @Body('text') text: string, 
     @Body('title') title: string): void
   {
-    this.appService.sendMail(email, text, title);
+    this.appService.sendMail(email, title, text);
   }
 }
