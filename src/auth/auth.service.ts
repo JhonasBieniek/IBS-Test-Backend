@@ -2,14 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { User } from 'src/models/user.model';
 import { AuthError, createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential, } from 'firebase/auth';
-import { setDoc, DocumentReference, doc, getDoc, DocumentSnapshot, DocumentData, } from 'firebase/firestore';
+import { setDoc, query, DocumentReference, doc, getDoc, DocumentSnapshot, DocumentData, where, getDocs, } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-
 @Injectable()
 export class AuthService {
-    constructor(private firebaseService: FirebaseService) { }
+    constructor(
+        private firebaseService: FirebaseService
+    ) { }
 
     public async login(
         email: string,
@@ -81,10 +82,12 @@ export class AuthService {
 
 
     public async getAll(): Promise<any> {
-        // return this.firebaseService.usersCollection.
+        let q = query(this.firebaseService.usersCollection);
+        let querySnapshot = await getDocs(q);
+        let allUsers: Object[] = [{}];
+        querySnapshot.forEach((doc: any) => {
+            allUsers.push(doc.data());
+        });
+        return allUsers;
     }
-    // public async getAll(): Promise<any> {
-    //     const response = await axios.get('https://your-firebase-database-url.firebaseio.com/your-collection.json');
-    //     return response.data;
-    // }
 }
