@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { User } from 'src/models/user.model';
 import { AuthError, createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential, } from 'firebase/auth';
-import { setDoc, query, DocumentReference, doc, getDoc, DocumentSnapshot, DocumentData, where, getDocs, } from 'firebase/firestore';
+import { setDoc, query, DocumentReference, doc, getDoc, DocumentSnapshot, DocumentData, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
@@ -90,4 +90,42 @@ export class AuthService {
         });
         return allUsers;
     }
+
+    public async getOne(id: string): Promise<any> {
+        let q = query(this.firebaseService.usersCollection, where("id", "==", id));
+        let querySnapshot = await getDocs(q);
+        let allUsers: Object[] = [{}];
+        querySnapshot.forEach((doc: any) => {
+            allUsers.push(doc.data());
+        });
+        return allUsers;
+    }
+
+    public async remove(id: string) {
+        const querySnapshot = await getDocs(
+            query(this.firebaseService.usersCollection, where('id', '==', id))
+        );
+        const documents = querySnapshot.docs;
+        if (documents.length > 0) {
+            const document = documents[0];
+            const userDoc = doc(this.firebaseService.usersCollection, document.id);
+            return deleteDoc(userDoc);
+        }
+        console.log("erro")
+    }
+
+    async update(id: string, user: any) {
+        user['modified'] = new Date();
+        const querySnapshot = await getDocs(
+            query(this.firebaseService.usersCollection, where('id', '==', id))
+        );
+        const documents = querySnapshot.docs;
+        if (documents.length > 0) {
+            const document = documents[0];
+            const userDoc = doc(this.firebaseService.usersCollection, document.id);
+            return updateDoc(userDoc, user);
+        }
+        console.log("erro")
+    }
+
 }

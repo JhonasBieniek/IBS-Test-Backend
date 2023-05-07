@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Delete, Patch } from '@nestjs/common';
 import { User } from 'src/models/user.model';
 import { AuthService } from './auth.service';
 
@@ -16,12 +16,23 @@ export class AuthController {
     return this.authService.register(body);
   }
 
-  // @Get('')
-  // public getAll() {
-  //   return this.authService.getAll
-  // }
   @Get()
   async getData(): Promise<any> {
     return this.authService.getAll();
+  }
+
+  @Get('single/:id')
+  async getOneData(@Param('id') id: string): Promise<any> {
+    return this.authService.getOne(id);
+  }
+
+  @Patch('edit/:id')
+  update(@Param('id') id: string, @Body() user: User) {
+    return this.authService.update(id, user);
+  }
+
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string): Promise<any> {
+    return this.authService.remove(id);
   }
 }
