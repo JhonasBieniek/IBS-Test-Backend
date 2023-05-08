@@ -1,16 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Post('send-email')
-  sendEmail(
-    @Body('email') email: string, 
-    @Body('text') text: string, 
-    @Body('title') title: string): void
-  {
-    this.appService.sendMail(email, title, text);
-  }
+  constructor() {}
 }

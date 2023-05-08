@@ -1,23 +1,15 @@
+import { UserModule } from './user/user.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { FirebaseService } from './firebase/firebase.service';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.gmail.com',
-        auth: {
-          user: 'goniekinbox@gmail.com',
-          pass: 'ewoxgmbjlpvizwnp',
-        }
-      }
-    }),
-    AuthModule, ConfigModule.forRoot()
+    UserModule, ConfigModule.forRoot(),
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService, FirebaseService],
